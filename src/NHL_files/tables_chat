@@ -1,0 +1,164 @@
+Table: Games
+Columns:
+
+game_id (Primary Key, Unique Identifier for each game)
+start_time (DateTime, the start time of the game)
+away_team_abbreviation (String, the abbreviation of the away team)
+away_team_location (String, the location name of the away team)
+away_team_short_name (String, the short name of the away team)
+away_team_name (String, the name of the away team)
+home_team_abbreviation (String, the abbreviation of the home team)
+home_team_location (String, the location name of the home team)
+home_team_short_name (String, the short name of the home team)
+home_team_name (String, the name of the home team)
+away_team_goals (Integer, the number of goals scored by the away team)
+home_team_goals (Integer, the number of goals scored by the home team)
+Table: Goals
+Columns:
+
+goal_id (Primary Key, Unique Identifier for each goal)
+game_id (Foreign Key, references the game_id in the Games table)
+team_abbreviation (String, the abbreviation of the team that scored the goal)
+period (String, the period in which the goal was scored)
+scorer_player (String, the player who scored the goal)
+scorer_season_total (Integer, the total number of goals scored by the player in the season)
+assists_players (Array of Strings, the players who assisted in scoring the goal)
+assists_season_totals (Array of Integers, the total number of assists by each assisting player)
+minute (Integer, the minute at which the goal was scored)
+second (Integer, the second at which the goal was scored)
+empty_net (Boolean, indicates if the goal was scored on an empty net)
+Table: Teams
+Columns:
+
+team_id (Primary Key, Unique Identifier for each team)
+abbreviation (String, the abbreviation of the team)
+location_name (String, the location name of the team)
+short_name (String, the short name of the team)
+team_name (String, the name of the team)
+Table: GameStats
+Columns:
+
+game_id (Foreign Key, references the game_id in the Games table)
+team_abbreviation (String, the abbreviation of the team)
+blocked (Integer, the number of blocked shots by the team)
+faceoff_win_percentage (String, the faceoff win percentage of the team)
+giveaways (Integer, the number of giveaways by the team)
+hits (Integer, the number of hits by the team)
+pim (Integer, the penalty minutes by the team)
+powerplay_goals (Integer, the number of powerplay goals scored by the team)
+powerplay_opportunities (Integer, the number of powerplay opportunities for the team)
+powerplay_percentage (String, the powerplay percentage of the team)
+shots (Integer, the number of shots taken by the team)
+takeaways (Integer, the number of takeaways by the team)
+
+-- Create Games table
+CREATE TABLE Games (
+    game_id INT PRIMARY KEY,
+    start_time DATETIME,
+    away_team_abbreviation VARCHAR(255),
+    away_team_location VARCHAR(255),
+    away_team_short_name VARCHAR(255),
+    away_team_name VARCHAR(255),
+    home_team_abbreviation VARCHAR(255),
+    home_team_location VARCHAR(255),
+    home_team_short_name VARCHAR(255),
+    home_team_name VARCHAR(255),
+    away_team_goals INT,
+    home_team_goals INT
+);
+
+-- Create Goals table
+CREATE TABLE Goals (
+    goal_id INT PRIMARY KEY,
+    game_id INT,
+    team_abbreviation VARCHAR(255),
+    period VARCHAR(255),
+    scorer_player VARCHAR(255),
+    scorer_season_total INT,
+    assists_players VARCHAR(255) ARRAY,
+    assists_season_totals INT ARRAY,
+    minute INT,
+    second INT,
+    empty_net BOOLEAN,
+    FOREIGN KEY (game_id) REFERENCES Games (game_id)
+);
+
+-- Create Teams table
+CREATE TABLE Teams (
+    team_id INT PRIMARY KEY,
+    abbreviation VARCHAR(255),
+    location_name VARCHAR(255),
+    short_name VARCHAR(255),
+    team_name VARCHAR(255)
+);
+
+-- Create GameStats table
+CREATE TABLE GameStats (
+    game_id INT,
+    team_abbreviation VARCHAR(255),
+    blocked INT,
+    faceoff_win_percentage VARCHAR(255),
+    giveaways INT,
+    hits INT,
+    pim INT,
+    powerplay_goals INT,
+    powerplay_opportunities INT,
+    powerplay_percentage VARCHAR(255),
+    shots INT,
+    takeaways INT,
+    FOREIGN KEY (game_id) REFERENCES Games (game_id)
+);
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+
+public class DatabaseHelper {
+    // Function to create and execute an SQL insert statement for the Games table
+    public static void insertGame(Connection connection, int gameId, String startTime, String awayTeamAbbreviation, String awayTeamLocation, String awayTeamShortName, String awayTeamName, String homeTeamAbbreviation, String homeTeamLocation, String homeTeamShortName, String homeTeamName, int awayTeamGoals, int homeTeamGoals) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO Games (game_id, start_time, away_team_abbreviation, away_team_location, away_team_short_name, away_team_name, home_team_abbreviation, home_team_location, home_team_short_name, home_team_name, away_team_goals, home_team_goals) VALUES (" + gameId + ", '" + startTime + "', '" + awayTeamAbbreviation + "', '" + awayTeamLocation + "', '" + awayTeamShortName + "', '" + awayTeamName + "', '" + homeTeamAbbreviation + "', '" + homeTeamLocation + "', '" + homeTeamShortName + "', '" + homeTeamName + "', " + awayTeamGoals + ", " + homeTeamGoals + ")";
+            statement.executeUpdate(sql);
+            System.out.println("Game record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Function to create and execute an SQL insert statement for the Goals table
+    public static void insertGoal(Connection connection, int goalId, int gameId, String teamAbbreviation, String period, String scorerPlayer, int scorerSeasonTotal, String assistsPlayers, String assistsSeasonTotals, int minute, int second, boolean emptyNet) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO Goals (goal_id, game_id, team_abbreviation, period, scorer_player, scorer_season_total, assists_players, assists_season_totals, minute, second, empty_net) VALUES (" + goalId + ", " + gameId + ", '" + teamAbbreviation + "', '" + period + "', '" + scorerPlayer + "', " + scorerSeasonTotal + ", '{" + assistsPlayers + "}', '{" + assistsSeasonTotals + "}', " + minute + ", " + second + ", " + (emptyNet ? 1 : 0) + ")";
+            statement.executeUpdate(sql);
+            System.out.println("Goal record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Function to create and execute an SQL insert statement for the Teams table
+    public static void insertTeam(Connection connection, int teamId, String abbreviation, String locationName, String shortName, String teamName) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO Teams (team_id, abbreviation, location_name, short_name, team_name) VALUES (" + teamId + ", '" + abbreviation + "', '" + locationName + "', '" + shortName + "', '" + teamName + "')";
+            statement.executeUpdate(sql);
+            System.out.println("Team record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Function to create and execute an SQL insert statement for the GameStats table
+    public static void insertGameStats(Connection connection, int gameId, String teamAbbreviation, int blocked, String faceoffWinPercentage, int giveaways, int hits, int pim, int powerplayGoals, int powerplayOpportunities, String powerplayPercentage, int shots, int takeaways) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO GameStats (game_id, team_abbreviation, blocked, faceoff_win_percentage, giveaways, hits, pim, powerplay_goals, powerplay_opportunities, powerplay_percentage, shots, takeaways) VALUES (" + gameId + ", '" + teamAbbreviation + "', " + blocked + ", '" + faceoffWinPercentage + "', " + giveaways + ", " + hits + ", " + pim + ", " + powerplayGoals + ", " + powerplayOpportunities + ", '" + powerplayPercentage + "', " + shots + ", " + takeaways + ")";
+            statement.executeUpdate(sql);
+            System.out.println("GameStats record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
