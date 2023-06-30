@@ -1,0 +1,1017 @@
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+
+public class DatabaseHelper {
+public static void insertGame(Connection connection, String startTime, String awayTeamAbbreviation, String awayTeamLocation, String awayTeamShortName, String awayTeamName, String homeTeamAbbreviation, String homeTeamLocation, String homeTeamShortName, String homeTeamName, int awayTeamGoals, int homeTeamGoals) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO Games (start_time, away_team_abbreviation, away_team_location, away_team_short_name, away_team_name, home_team_abbreviation, home_team_location, home_team_short_name, home_team_name, away_team_goals, home_team_goals) VALUES ('" + startTime + "', '" + awayTeamAbbreviation + "', '" + awayTeamLocation + "', '" + awayTeamShortName + "', '" + awayTeamName + "', '" + homeTeamAbbreviation + "', '" + homeTeamLocation + "', '" + homeTeamShortName + "', '" + homeTeamName + "', " + awayTeamGoals + ", " + homeTeamGoals + ")";
+            statement.executeUpdate(sql);
+            System.out.println("Game record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Function to create and execute an SQL insert statement for the Goals table
+    public static void insertGoal(Connection connection, int gameId, String teamAbbreviation, String period, String scorerPlayer, int scorerSeasonTotal, String[] assistsPlayers, int[] assistsSeasonTotals, int minute, int second, boolean emptyNet) {
+        try {
+            Statement statement = connection.createStatement();
+            String assistsPlayersStr = String.join(",", assistsPlayers);
+            String assistsSeasonTotalsStr = Arrays.toString(assistsSeasonTotals).replace("[", "").replace("]", "");
+            String sql = "INSERT INTO Goals (game_id, team_abbreviation, period, scorer_player, scorer_season_total, assists_players, assists_season_totals, minute, second, empty_net) VALUES (" + gameId + ", '" + teamAbbreviation + "', '" + period + "', '" + scorerPlayer + "', " + scorerSeasonTotal + ", '" + assistsPlayersStr + "', '" + assistsSeasonTotalsStr + "', " + minute + ", " + second + ", " + (emptyNet ? 1 : 0) + ")";
+            statement.executeUpdate(sql);
+            System.out.println("Goal record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Function to create and execute an SQL insert statement for the Teams table
+    public static void insertTeam(Connection connection, int teamId, String abbreviation, String locationName, String shortName, String teamName) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO Teams (team_id, abbreviation, location_name, short_name, team_name) VALUES (" + teamId + ", '" + abbreviation + "', '" + locationName + "', '" + shortName + "', '" + teamName + "')";
+            statement.executeUpdate(sql);
+            System.out.println("Team record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Function to create and execute an SQL insert statement for the GameStats table
+    public static void insertGameStats(Connection connection, int gameId, String teamAbbreviation, int blocked, String faceoffWinPercentage, int giveaways, int hits, int pim, int powerplayGoals, int powerplayOpportunities, String powerplayPercentage, int shots, int takeaways) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO GameStats (game_id, team_abbreviation, blocked, faceoff_win_percentage, giveaways, hits, pim, powerplay_goals, powerplay_opportunities, powerplay_percentage, shots, takeaways) VALUES (" + gameId + ", '" + teamAbbreviation + "', " + blocked + ", '" + faceoffWinPercentage + "', " + giveaways + ", " + hits + ", " + pim + ", " + powerplayGoals + ", " + powerplayOpportunities + ", '" + powerplayPercentage + "', " + shots + ", " + takeaways + ")";
+            statement.executeUpdate(sql);
+            System.out.println("GameStats record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        }
+
+        // import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
+        // import com.fasterxml.jackson.annotation.JsonProperty; // version 2.11.1
+        /* ObjectMapper om = new ObjectMapper();
+        Root root = om.readValue(myJsonString, Root.class); */
+        public class ANA{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class Assist{
+            public String player;
+            public int seasonTotal;
+        }
+
+        public class Away{
+            public String abbreviation;
+            public int id;
+            public String locationName;
+            public String shortName;
+            public String teamName;
+        }
+
+        public class Blocked{
+            @JsonProperty("VAN")
+            public int vAN;
+            @JsonProperty("BUF")
+            public int bUF;
+            @JsonProperty("SJS")
+            public int sJS;
+            @JsonProperty("MTL")
+            public int mTL;
+            @JsonProperty("FLA")
+            public int fLA;
+            @JsonProperty("TBL")
+            public int tBL;
+            @JsonProperty("SEA")
+            public int sEA;
+            @JsonProperty("NJD")
+            public int nJD;
+            @JsonProperty("DAL")
+            public int dAL;
+            @JsonProperty("PIT")
+            public int pIT;
+            @JsonProperty("COL")
+            public int cOL;
+            @JsonProperty("WSH")
+            public int wSH;
+            @JsonProperty("CBJ")
+            public int cBJ;
+            @JsonProperty("DET")
+            public int dET;
+            @JsonProperty("NYI")
+            public int nYI;
+            @JsonProperty("CHI")
+            public int cHI;
+            @JsonProperty("LAK")
+            public int lAK;
+            @JsonProperty("NSH")
+            public int nSH;
+            @JsonProperty("WPG")
+            public int wPG;
+            @JsonProperty("MIN")
+            public int mIN;
+            @JsonProperty("ANA")
+            public int aNA;
+            @JsonProperty("EDM")
+            public int eDM;
+        }
+
+        public class BUF{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class CBJ{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class CHI{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class COL{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class CurrentStats{
+            public Records records;
+            public Streaks streaks;
+            public Standings standings;
+        }
+
+        public class DAL{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class Date{
+            public String raw;
+            public String pretty;
+        }
+
+        public class DET{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class EDM{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class FaceOffWinPercentage{
+            @JsonProperty("VAN")
+            public String vAN;
+            @JsonProperty("BUF")
+            public String bUF;
+            @JsonProperty("SJS")
+            public String sJS;
+            @JsonProperty("MTL")
+            public String mTL;
+            @JsonProperty("FLA")
+            public String fLA;
+            @JsonProperty("TBL")
+            public String tBL;
+            @JsonProperty("SEA")
+            public String sEA;
+            @JsonProperty("NJD")
+            public String nJD;
+            @JsonProperty("DAL")
+            public String dAL;
+            @JsonProperty("PIT")
+            public String pIT;
+            @JsonProperty("COL")
+            public String cOL;
+            @JsonProperty("WSH")
+            public String wSH;
+            @JsonProperty("CBJ")
+            public String cBJ;
+            @JsonProperty("DET")
+            public String dET;
+            @JsonProperty("NYI")
+            public String nYI;
+            @JsonProperty("CHI")
+            public String cHI;
+            @JsonProperty("LAK")
+            public String lAK;
+            @JsonProperty("NSH")
+            public String nSH;
+            @JsonProperty("WPG")
+            public String wPG;
+            @JsonProperty("MIN")
+            public String mIN;
+            @JsonProperty("ANA")
+            public String aNA;
+            @JsonProperty("EDM")
+            public String eDM;
+        }
+
+        public class FLA{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class Game{
+            public Status status;
+            public Date startTime;
+            public ArrayList<Goal> goals;
+            public Scores scores;
+            public Teams teams;
+            public CurrentStats currentStats;
+            public GameStats gameStats;
+        }
+
+        public class GameStats{
+            public Blocked blocked;
+            public FaceOffWinPercentage faceOffWinPercentage;
+            public Giveaways giveaways;
+            public Hits hits;
+            public Pim pim;
+            public PowerPlay powerPlay;
+            public Shots shots;
+            public Takeaways takeaways;
+        }
+
+        public class Giveaways{
+            @JsonProperty("VAN")
+            public int vAN;
+            @JsonProperty("BUF")
+            public int bUF;
+            @JsonProperty("SJS")
+            public int sJS;
+            @JsonProperty("MTL")
+            public int mTL;
+            @JsonProperty("FLA")
+            public int fLA;
+            @JsonProperty("TBL")
+            public int tBL;
+            @JsonProperty("SEA")
+            public int sEA;
+            @JsonProperty("NJD")
+            public int nJD;
+            @JsonProperty("DAL")
+            public int dAL;
+            @JsonProperty("PIT")
+            public int pIT;
+            @JsonProperty("COL")
+            public int cOL;
+            @JsonProperty("WSH")
+            public int wSH;
+            @JsonProperty("CBJ")
+            public int cBJ;
+            @JsonProperty("DET")
+            public int dET;
+            @JsonProperty("NYI")
+            public int nYI;
+            @JsonProperty("CHI")
+            public int cHI;
+            @JsonProperty("LAK")
+            public int lAK;
+            @JsonProperty("NSH")
+            public int nSH;
+            @JsonProperty("WPG")
+            public int wPG;
+            @JsonProperty("MIN")
+            public int mIN;
+            @JsonProperty("ANA")
+            public int aNA;
+            @JsonProperty("EDM")
+            public int eDM;
+        }
+
+        public class Goal{
+            public String team;
+            public String period;
+            public Scorer scorer;
+            public ArrayList<Assist> assists;
+            public int min;
+            public int sec;
+            public boolean emptyNet;
+            public String strength;
+        }
+
+        public class Hits{
+            @JsonProperty("VAN")
+            public int vAN;
+            @JsonProperty("BUF")
+            public int bUF;
+            @JsonProperty("SJS")
+            public int sJS;
+            @JsonProperty("MTL")
+            public int mTL;
+            @JsonProperty("FLA")
+            public int fLA;
+            @JsonProperty("TBL")
+            public int tBL;
+            @JsonProperty("SEA")
+            public int sEA;
+            @JsonProperty("NJD")
+            public int nJD;
+            @JsonProperty("DAL")
+            public int dAL;
+            @JsonProperty("PIT")
+            public int pIT;
+            @JsonProperty("COL")
+            public int cOL;
+            @JsonProperty("WSH")
+            public int wSH;
+            @JsonProperty("CBJ")
+            public int cBJ;
+            @JsonProperty("DET")
+            public int dET;
+            @JsonProperty("NYI")
+            public int nYI;
+            @JsonProperty("CHI")
+            public int cHI;
+            @JsonProperty("LAK")
+            public int lAK;
+            @JsonProperty("NSH")
+            public int nSH;
+            @JsonProperty("WPG")
+            public int wPG;
+            @JsonProperty("MIN")
+            public int mIN;
+            @JsonProperty("ANA")
+            public int aNA;
+            @JsonProperty("EDM")
+            public int eDM;
+        }
+
+        public class Home{
+            public String abbreviation;
+            public int id;
+            public String locationName;
+            public String shortName;
+            public String teamName;
+        }
+
+        public class LAK{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class MIN{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class MTL{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class NJD{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class NSH{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class NYI{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class Pim{
+            @JsonProperty("VAN")
+            public int vAN;
+            @JsonProperty("BUF")
+            public int bUF;
+            @JsonProperty("SJS")
+            public int sJS;
+            @JsonProperty("MTL")
+            public int mTL;
+            @JsonProperty("FLA")
+            public int fLA;
+            @JsonProperty("TBL")
+            public int tBL;
+            @JsonProperty("SEA")
+            public int sEA;
+            @JsonProperty("NJD")
+            public int nJD;
+            @JsonProperty("DAL")
+            public int dAL;
+            @JsonProperty("PIT")
+            public int pIT;
+            @JsonProperty("COL")
+            public int cOL;
+            @JsonProperty("WSH")
+            public int wSH;
+            @JsonProperty("CBJ")
+            public int cBJ;
+            @JsonProperty("DET")
+            public int dET;
+            @JsonProperty("NYI")
+            public int nYI;
+            @JsonProperty("CHI")
+            public int cHI;
+            @JsonProperty("LAK")
+            public int lAK;
+            @JsonProperty("NSH")
+            public int nSH;
+            @JsonProperty("WPG")
+            public int wPG;
+            @JsonProperty("MIN")
+            public int mIN;
+            @JsonProperty("ANA")
+            public int aNA;
+            @JsonProperty("EDM")
+            public int eDM;
+        }
+
+        public class PIT{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class PowerPlay{
+            @JsonProperty("VAN")
+            public VAN vAN;
+            @JsonProperty("BUF")
+            public BUF bUF;
+            @JsonProperty("SJS")
+            public SJS sJS;
+            @JsonProperty("MTL")
+            public MTL mTL;
+            @JsonProperty("FLA")
+            public FLA fLA;
+            @JsonProperty("TBL")
+            public TBL tBL;
+            @JsonProperty("SEA")
+            public SEA sEA;
+            @JsonProperty("NJD")
+            public NJD nJD;
+            @JsonProperty("DAL")
+            public DAL dAL;
+            @JsonProperty("PIT")
+            public PIT pIT;
+            @JsonProperty("COL")
+            public COL cOL;
+            @JsonProperty("WSH")
+            public WSH wSH;
+            @JsonProperty("CBJ")
+            public CBJ cBJ;
+            @JsonProperty("DET")
+            public DET dET;
+            @JsonProperty("NYI")
+            public NYI nYI;
+            @JsonProperty("CHI")
+            public CHI cHI;
+            @JsonProperty("LAK")
+            public LAK lAK;
+            @JsonProperty("NSH")
+            public NSH nSH;
+            @JsonProperty("WPG")
+            public WPG wPG;
+            @JsonProperty("MIN")
+            public MIN mIN;
+            @JsonProperty("ANA")
+            public ANA aNA;
+            @JsonProperty("EDM")
+            public EDM eDM;
+        }
+
+        public class Records{
+            @JsonProperty("VAN")
+            public VAN vAN;
+            @JsonProperty("BUF")
+            public BUF bUF;
+            @JsonProperty("SJS")
+            public SJS sJS;
+            @JsonProperty("MTL")
+            public MTL mTL;
+            @JsonProperty("FLA")
+            public FLA fLA;
+            @JsonProperty("TBL")
+            public TBL tBL;
+            @JsonProperty("SEA")
+            public SEA sEA;
+            @JsonProperty("NJD")
+            public NJD nJD;
+            @JsonProperty("DAL")
+            public DAL dAL;
+            @JsonProperty("PIT")
+            public PIT pIT;
+            @JsonProperty("COL")
+            public COL cOL;
+            @JsonProperty("WSH")
+            public WSH wSH;
+            @JsonProperty("CBJ")
+            public CBJ cBJ;
+            @JsonProperty("DET")
+            public DET dET;
+            @JsonProperty("NYI")
+            public NYI nYI;
+            @JsonProperty("CHI")
+            public CHI cHI;
+            @JsonProperty("LAK")
+            public LAK lAK;
+            @JsonProperty("NSH")
+            public NSH nSH;
+            @JsonProperty("WPG")
+            public WPG wPG;
+            @JsonProperty("MIN")
+            public MIN mIN;
+            @JsonProperty("ANA")
+            public ANA aNA;
+            @JsonProperty("EDM")
+            public EDM eDM;
+        }
+
+        public class Root{
+            public Date date;
+            public ArrayList<Game> games;
+        }
+
+        public class Scorer{
+            public String player;
+            public int seasonTotal;
+        }
+
+        public class Scores{
+            @JsonProperty("VAN")
+            public int vAN;
+            @JsonProperty("BUF")
+            public int bUF;
+            @JsonProperty("SJS")
+            public int sJS;
+            @JsonProperty("MTL")
+            public int mTL;
+            @JsonProperty("FLA")
+            public int fLA;
+            @JsonProperty("TBL")
+            public int tBL;
+            @JsonProperty("SEA")
+            public int sEA;
+            @JsonProperty("NJD")
+            public int nJD;
+            @JsonProperty("DAL")
+            public int dAL;
+            @JsonProperty("PIT")
+            public int pIT;
+            public boolean shootout;
+            @JsonProperty("COL")
+            public int cOL;
+            @JsonProperty("WSH")
+            public int wSH;
+            @JsonProperty("CBJ")
+            public int cBJ;
+            @JsonProperty("DET")
+            public int dET;
+            @JsonProperty("NYI")
+            public int nYI;
+            @JsonProperty("CHI")
+            public int cHI;
+            @JsonProperty("LAK")
+            public int lAK;
+            @JsonProperty("NSH")
+            public int nSH;
+            @JsonProperty("WPG")
+            public int wPG;
+            @JsonProperty("MIN")
+            public int mIN;
+            public boolean overtime;
+            @JsonProperty("ANA")
+            public int aNA;
+            @JsonProperty("EDM")
+            public int eDM;
+        }
+
+        public class SEA{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class Shots{
+            @JsonProperty("VAN")
+            public int vAN;
+            @JsonProperty("BUF")
+            public int bUF;
+            @JsonProperty("SJS")
+            public int sJS;
+            @JsonProperty("MTL")
+            public int mTL;
+            @JsonProperty("FLA")
+            public int fLA;
+            @JsonProperty("TBL")
+            public int tBL;
+            @JsonProperty("SEA")
+            public int sEA;
+            @JsonProperty("NJD")
+            public int nJD;
+            @JsonProperty("DAL")
+            public int dAL;
+            @JsonProperty("PIT")
+            public int pIT;
+            @JsonProperty("COL")
+            public int cOL;
+            @JsonProperty("WSH")
+            public int wSH;
+            @JsonProperty("CBJ")
+            public int cBJ;
+            @JsonProperty("DET")
+            public int dET;
+            @JsonProperty("NYI")
+            public int nYI;
+            @JsonProperty("CHI")
+            public int cHI;
+            @JsonProperty("LAK")
+            public int lAK;
+            @JsonProperty("NSH")
+            public int nSH;
+            @JsonProperty("WPG")
+            public int wPG;
+            @JsonProperty("MIN")
+            public int mIN;
+            @JsonProperty("ANA")
+            public int aNA;
+            @JsonProperty("EDM")
+            public int eDM;
+        }
+
+        public class SJS{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class Standings{
+            @JsonProperty("VAN")
+            public VAN vAN;
+            @JsonProperty("BUF")
+            public BUF bUF;
+            @JsonProperty("SJS")
+            public SJS sJS;
+            @JsonProperty("MTL")
+            public MTL mTL;
+            @JsonProperty("FLA")
+            public FLA fLA;
+            @JsonProperty("TBL")
+            public TBL tBL;
+            @JsonProperty("SEA")
+            public SEA sEA;
+            @JsonProperty("NJD")
+            public NJD nJD;
+            @JsonProperty("DAL")
+            public DAL dAL;
+            @JsonProperty("PIT")
+            public PIT pIT;
+            @JsonProperty("COL")
+            public COL cOL;
+            @JsonProperty("WSH")
+            public WSH wSH;
+            @JsonProperty("CBJ")
+            public CBJ cBJ;
+            @JsonProperty("DET")
+            public DET dET;
+            @JsonProperty("NYI")
+            public NYI nYI;
+            @JsonProperty("CHI")
+            public CHI cHI;
+            @JsonProperty("LAK")
+            public LAK lAK;
+            @JsonProperty("NSH")
+            public NSH nSH;
+            @JsonProperty("WPG")
+            public WPG wPG;
+            @JsonProperty("MIN")
+            public MIN mIN;
+            @JsonProperty("ANA")
+            public ANA aNA;
+            @JsonProperty("EDM")
+            public EDM eDM;
+        }
+
+        public class Status{
+            public String state;
+        }
+
+        public class Streaks{
+            @JsonProperty("VAN")
+            public VAN vAN;
+            @JsonProperty("BUF")
+            public BUF bUF;
+            @JsonProperty("SJS")
+            public SJS sJS;
+            @JsonProperty("MTL")
+            public MTL mTL;
+            @JsonProperty("FLA")
+            public FLA fLA;
+            @JsonProperty("TBL")
+            public TBL tBL;
+            @JsonProperty("SEA")
+            public SEA sEA;
+            @JsonProperty("NJD")
+            public NJD nJD;
+            @JsonProperty("DAL")
+            public DAL dAL;
+            @JsonProperty("PIT")
+            public PIT pIT;
+            @JsonProperty("COL")
+            public COL cOL;
+            @JsonProperty("WSH")
+            public WSH wSH;
+            @JsonProperty("CBJ")
+            public CBJ cBJ;
+            @JsonProperty("DET")
+            public DET dET;
+            @JsonProperty("NYI")
+            public NYI nYI;
+            @JsonProperty("CHI")
+            public CHI cHI;
+            @JsonProperty("LAK")
+            public LAK lAK;
+            @JsonProperty("NSH")
+            public NSH nSH;
+            @JsonProperty("WPG")
+            public WPG wPG;
+            @JsonProperty("MIN")
+            public MIN mIN;
+            @JsonProperty("ANA")
+            public ANA aNA;
+            @JsonProperty("EDM")
+            public EDM eDM;
+        }
+
+        public class Takeaways{
+            @JsonProperty("VAN")
+            public int vAN;
+            @JsonProperty("BUF")
+            public int bUF;
+            @JsonProperty("SJS")
+            public int sJS;
+            @JsonProperty("MTL")
+            public int mTL;
+            @JsonProperty("FLA")
+            public int fLA;
+            @JsonProperty("TBL")
+            public int tBL;
+            @JsonProperty("SEA")
+            public int sEA;
+            @JsonProperty("NJD")
+            public int nJD;
+            @JsonProperty("DAL")
+            public int dAL;
+            @JsonProperty("PIT")
+            public int pIT;
+            @JsonProperty("COL")
+            public int cOL;
+            @JsonProperty("WSH")
+            public int wSH;
+            @JsonProperty("CBJ")
+            public int cBJ;
+            @JsonProperty("DET")
+            public int dET;
+            @JsonProperty("NYI")
+            public int nYI;
+            @JsonProperty("CHI")
+            public int cHI;
+            @JsonProperty("LAK")
+            public int lAK;
+            @JsonProperty("NSH")
+            public int nSH;
+            @JsonProperty("WPG")
+            public int wPG;
+            @JsonProperty("MIN")
+            public int mIN;
+            @JsonProperty("ANA")
+            public int aNA;
+            @JsonProperty("EDM")
+            public int eDM;
+        }
+
+        public class TBL{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class Teams{
+            public Away away;
+            public Home home;
+        }
+
+        public class VAN{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class WPG{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+
+        public class WSH{
+            public int wins;
+            public int losses;
+            public int ot;
+            public String type;
+            public int count;
+            public String divisionRank;
+            public String leagueRank;
+            public String pointsFromPlayoffSpot;
+            public int goals;
+            public int opportunities;
+            public String percentage;
+        }
+

@@ -1,7 +1,7 @@
 import java.sql.*;
 public class MysqlCon{
 
-        private static String url = "jdbc:mysql://localhost:3306/NOMASDB";
+        private static String url = "jdbc:mysql://localhost:3306/NOMASDBN";
         private static String driverName = "com.mysql.cj.jdbc.Driver";
         private static String username = "root";
         private static String password = "password";

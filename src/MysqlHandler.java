@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.Arrays;
 
 public class MysqlHandler {
     public static void createTableNBA(){
@@ -134,220 +135,79 @@ public class MysqlHandler {
             throw new RuntimeException(e);
         }
     }
-    public static void createTableNHLScoreboard(){
-        String sql = "CREATE TABLE IF NOT EXISTS NHL_SCOREBOARD " +
-                "(id INTEGER not NULL AUTO_INCREMENT, " +
-                " DATE VARCHAR(255), " +
-                " ANA_M VARCHAR(255), " +
-                " ANA_W VARCHAR(255), " +
-                " ANA_T VARCHAR(255), " +
-                " ANA_L VARCHAR(255), " +
-                " ANA_GW VARCHAR(255), " +
-                " ANA_GL VARCHAR(255), " +
-                " ARI_M VARCHAR(255), " +
-                " ARI_W VARCHAR(255), " +
-                " ARI_T VARCHAR(255), " +
-                " ARI_L VARCHAR(255), " +
-                " ARI_GW VARCHAR(255), " +
-                " ARI_GL VARCHAR(255), " +
-                " BOS_M VARCHAR(255), " +
-                " BOS_W VARCHAR(255), " +
-                " BOS_T VARCHAR(255), " +
-                " BOS_L VARCHAR(255), " +
-                " BOS_GW VARCHAR(255), " +
-                " BOS_GL VARCHAR(255), " +
-                " BUF_M VARCHAR(255), " +
-                " BUF_W VARCHAR(255), " +
-                " BUF_T VARCHAR(255), " +
-                " BUF_L VARCHAR(255), " +
-                " BUF_GW VARCHAR(255), " +
-                " BUF_GL VARCHAR(255), " +
-                " CAR_M VARCHAR(255), " +
-                " CAR_W VARCHAR(255), " +
-                " CAR_T VARCHAR(255), " +
-                " CAR_L VARCHAR(255), " +
-                " CAR_GW VARCHAR(255), " +
-                " CAR_GL VARCHAR(255), " +
-                " CBJ_M VARCHAR(255), " +
-                " CBJ_W VARCHAR(255), " +
-                " CBJ_T VARCHAR(255), " +
-                " CBJ_L VARCHAR(255), " +
-                " CBJ_GW VARCHAR(255), " +
-                " CBJ_GL VARCHAR(255), " +
-                " CGY_M VARCHAR(255), " +
-                " CGY_W VARCHAR(255), " +
-                " CGY_T VARCHAR(255), " +
-                " CGY_L VARCHAR(255), " +
-                " CGY_GW VARCHAR(255), " +
-                " CGY_GL VARCHAR(255), " +
-                " CHI_M VARCHAR(255), " +
-                " CHI_W VARCHAR(255), " +
-                " CHI_T VARCHAR(255), " +
-                " CHI_L VARCHAR(255), " +
-                " CHI_GW VARCHAR(255), " +
-                " CHI_GL VARCHAR(255), " +
-                " COL_M VARCHAR(255), " +
-                " COL_W VARCHAR(255), " +
-                " COL_T VARCHAR(255), " +
-                " COL_L VARCHAR(255), " +
-                " COL_GW VARCHAR(255), " +
-                " COL_GL VARCHAR(255), " +
-                " DAL_M VARCHAR(255), " +
-                " DAL_W VARCHAR(255), " +
-                " DAL_T VARCHAR(255), " +
-                " DAL_L VARCHAR(255), " +
-                " DAL_GW VARCHAR(255), " +
-                " DAL_GL VARCHAR(255), " +
-                " DET_M VARCHAR(255), " +
-                " DET_W VARCHAR(255), " +
-                " DET_T VARCHAR(255), " +
-                " DET_L VARCHAR(255), " +
-                " DET_GW VARCHAR(255), " +
-                " DET_GL VARCHAR(255), " +
-                " EDM_M VARCHAR(255), " +
-                " EDM_W VARCHAR(255), " +
-                " EDM_T VARCHAR(255), " +
-                " EDM_L VARCHAR(255), " +
-                " EDM_GW VARCHAR(255), " +
-                " EDM_GL VARCHAR(255), " +
-                " FLA_M VARCHAR(255), " +
-                " FLA_W VARCHAR(255), " +
-                " FLA_T VARCHAR(255), " +
-                " FLA_L VARCHAR(255), " +
-                " FLA_GW VARCHAR(255), " +
-                " FLA_GL VARCHAR(255), " +
-                " LAK_M VARCHAR(255), " +
-                " LAK_W VARCHAR(255), " +
-                " LAK_T VARCHAR(255), " +
-                " LAK_L VARCHAR(255), " +
-                " LAK_GW VARCHAR(255), " +
-                " LAK_GL VARCHAR(255), " +
-                " MIN_M VARCHAR(255), " +
-                " MIN_W VARCHAR(255), " +
-                " MIN_T VARCHAR(255), " +
-                " MIN_L VARCHAR(255), " +
-                " MIN_GW VARCHAR(255), " +
-                " MIN_GL VARCHAR(255), " +
-                " MTL_M VARCHAR(255), " +
-                " MTL_W VARCHAR(255), " +
-                " MTL_T VARCHAR(255), " +
-                " MTL_L VARCHAR(255), " +
-                " MTL_GW VARCHAR(255), " +
-                " MTL_GL VARCHAR(255), " +
-                " NJD_M VARCHAR(255), " +
-                " NJD_W VARCHAR(255), " +
-                " NJD_T VARCHAR(255), " +
-                " NJD_L VARCHAR(255), " +
-                " NJD_GW VARCHAR(255), " +
-                " NJD_GL VARCHAR(255), " +
-                " NSH_M VARCHAR(255), " +
-                " NSH_W VARCHAR(255), " +
-                " NSH_T VARCHAR(255), " +
-                " NSH_L VARCHAR(255), " +
-                " NSH_GW VARCHAR(255), " +
-                " NSH_GL VARCHAR(255), " +
-                " NYI_M VARCHAR(255), " +
-                " NYI_W VARCHAR(255), " +
-                " NYI_T VARCHAR(255), " +
-                " NYI_L VARCHAR(255), " +
-                " NYI_GW VARCHAR(255), " +
-                " NYI_GL VARCHAR(255), " +
-                " NYR_M VARCHAR(255), " +
-                " NYR_W VARCHAR(255), " +
-                " NYR_T VARCHAR(255), " +
-                " NYR_L VARCHAR(255), " +
-                " NYR_GW VARCHAR(255), " +
-                " NYR_GL VARCHAR(255), " +
-                " OTT_M VARCHAR(255), " +
-                " OTT_W VARCHAR(255), " +
-                " OTT_T VARCHAR(255), " +
-                " OTT_L VARCHAR(255), " +
-                " OTT_GW VARCHAR(255), " +
-                " OTT_GL VARCHAR(255), " +
-                " PHI_M VARCHAR(255), " +
-                " PHI_W VARCHAR(255), " +
-                " PHI_T VARCHAR(255), " +
-                " PHI_L VARCHAR(255), " +
-                " PHI_GW VARCHAR(255), " +
-                " PHI_GL VARCHAR(255), " +
-                " PIT_M VARCHAR(255), " +
-                " PIT_W VARCHAR(255), " +
-                " PIT_T VARCHAR(255), " +
-                " PIT_L VARCHAR(255), " +
-                " PIT_GW VARCHAR(255), " +
-                " PIT_GL VARCHAR(255), " +
-                " SEA_M VARCHAR(255), " +
-                " SEA_W VARCHAR(255), " +
-                " SEA_T VARCHAR(255), " +
-                " SEA_L VARCHAR(255), " +
-                " SEA_GW VARCHAR(255), " +
-                " SEA_GL VARCHAR(255), " +
-                " SJS_M VARCHAR(255), " +
-                " SJS_W VARCHAR(255), " +
-                " SJS_T VARCHAR(255), " +
-                " SJS_L VARCHAR(255), " +
-                " SJS_GW VARCHAR(255), " +
-                " SJS_GL VARCHAR(255), " +
-                " STL_M VARCHAR(255), " +
-                " STL_W VARCHAR(255), " +
-                " STL_T VARCHAR(255), " +
-                " STL_L VARCHAR(255), " +
-                " STL_GW VARCHAR(255), " +
-                " STL_GL VARCHAR(255), " +
-                " TBL_M VARCHAR(255), " +
-                " TBL_W VARCHAR(255), " +
-                " TBL_T VARCHAR(255), " +
-                " TBL_L VARCHAR(255), " +
-                " TBL_GW VARCHAR(255), " +
-                " TBL_GL VARCHAR(255), " +
-                " TOR_M VARCHAR(255), " +
-                " TOR_W VARCHAR(255), " +
-                " TOR_T VARCHAR(255), " +
-                " TOR_L VARCHAR(255), " +
-                " TOR_GW VARCHAR(255), " +
-                " TOR_GL VARCHAR(255), " +
-                " VAN_M VARCHAR(255), " +
-                " VAN_W VARCHAR(255), " +
-                " VAN_T VARCHAR(255), " +
-                " VAN_L VARCHAR(255), " +
-                " VAN_GW VARCHAR(255), " +
-                " VAN_GL VARCHAR(255), " +
-                " VGK_M VARCHAR(255), " +
-                " VGK_W VARCHAR(255), " +
-                " VGK_T VARCHAR(255), " +
-                " VGK_L VARCHAR(255), " +
-                " VGK_GW VARCHAR(255), " +
-                " VGK_GL VARCHAR(255), " +
-                " WPG_M VARCHAR(255), " +
-                " WPG_W VARCHAR(255), " +
-                " WPG_T VARCHAR(255), " +
-                " WPG_L VARCHAR(255), " +
-                " WPG_GW VARCHAR(255), " +
-                " WPG_GL VARCHAR(255), " +
-                " WSH_M VARCHAR(255), " +
-                " WSH_W VARCHAR(255), " +
-                " WSH_T VARCHAR(255), " +
-                " WSH_L VARCHAR(255), " +
-                " WSH_GW VARCHAR(255), " +
-                " WSH_GL VARCHAR(255), " +
-                " PRIMARY KEY ( id ))";
-        try{
-            Statement stmt = MysqlCon.getConnection().createStatement();
+    public static void createTableHockeyGames(){
+
+        String sql = "CREATE TABLE IF NOT EXISTS Games (\n" +
+                "    game_id INT PRIMARY KEY,\n" +
+                "    start_time DATETIME,\n" +
+                "    away_team_abbreviation VARCHAR(255),\n" +
+                "    away_team_location VARCHAR(255),\n" +
+                "    away_team_short_name VARCHAR(255),\n" +
+                "    away_team_name VARCHAR(255),\n" +
+                "    home_team_abbreviation VARCHAR(255),\n" +
+                "    home_team_location VARCHAR(255),\n" +
+                "    home_team_short_name VARCHAR(255),\n" +
+                "    home_team_name VARCHAR(255),\n" +
+                "    away_team_goals INT,\n" +
+                "    home_team_goals INT\n" +
+                ");";
+        try(Statement stmt = MysqlCon.getConnection().createStatement()){
             stmt.executeUpdate(sql);
         }
         catch (SQLException e){
             e.printStackTrace();
         }
     }
-    public static void insertRecordTableNHLScoreborad(String date){
-        String sql = "INSERT INTO NHL_SCOREBOARD(DATE) VALUES (?)";
-        try{
-            PreparedStatement preparedStatement = MysqlCon.getConnection().prepareStatement(sql);
-            preparedStatement.setString(1, date);
+    // Function to create and execute an SQL insert statement for the Games table
+    public static void insertGame(Connection connection, String startTime, String awayTeamAbbreviation, String awayTeamLocation, String awayTeamShortName, String awayTeamName, String homeTeamAbbreviation, String homeTeamLocation, String homeTeamShortName, String homeTeamName, int awayTeamGoals, int homeTeamGoals) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO Games (start_time, away_team_abbreviation, away_team_location, away_team_short_name, away_team_name, home_team_abbreviation, home_team_location, home_team_short_name, home_team_name, away_team_goals, home_team_goals) VALUES ('" + startTime + "', '" + awayTeamAbbreviation + "', '" + awayTeamLocation + "', '" + awayTeamShortName + "', '" + awayTeamName + "', '" + homeTeamAbbreviation + "', '" + homeTeamLocation + "', '" + homeTeamShortName + "', '" + homeTeamName + "', " + awayTeamGoals + ", " + homeTeamGoals + ")";
+            statement.executeUpdate(sql);
+            System.out.println("Game record inserted successfully.");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
+
+    // Function to create and execute an SQL insert statement for the Goals table
+    public static void insertGoal(Connection connection, int gameId, String teamAbbreviation, String period, String scorerPlayer, int scorerSeasonTotal, String[] assistsPlayers, int[] assistsSeasonTotals, int minute, int second, boolean emptyNet) {
+        try {
+            Statement statement = connection.createStatement();
+            String assistsPlayersStr = String.join(",", assistsPlayers);
+            String assistsSeasonTotalsStr = Arrays.toString(assistsSeasonTotals).replace("[", "").replace("]", "");
+            String sql = "INSERT INTO Goals (game_id, team_abbreviation, period, scorer_player, scorer_season_total, assists_players, assists_season_totals, minute, second, empty_net) VALUES (" + gameId + ", '" + teamAbbreviation + "', '" + period + "', '" + scorerPlayer + "', " + scorerSeasonTotal + ", '" + assistsPlayersStr + "', '" + assistsSeasonTotalsStr + "', " + minute + ", " + second + ", " + (emptyNet ? 1 : 0) + ")";
+            statement.executeUpdate(sql);
+            System.out.println("Goal record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Function to create and execute an SQL insert statement for the Teams table
+    public static void insertTeam(Connection connection, int teamId, String abbreviation, String locationName, String shortName, String teamName) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO Teams (team_id, abbreviation, location_name, short_name, team_name) VALUES (" + teamId + ", '" + abbreviation + "', '" + locationName + "', '" + shortName + "', '" + teamName + "')";
+            statement.executeUpdate(sql);
+            System.out.println("Team record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Function to create and execute an SQL insert statement for the GameStats table
+    public static void insertGameStats(Connection connection, int gameId, String teamAbbreviation, int blocked, String faceoffWinPercentage, int giveaways, int hits, int pim, int powerplayGoals, int powerplayOpportunities, String powerplayPercentage, int shots, int takeaways) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "INSERT INTO GameStats (game_id, team_abbreviation, blocked, faceoff_win_percentage, giveaways, hits, pim, powerplay_goals, powerplay_opportunities, powerplay_percentage, shots, takeaways) VALUES (" + gameId + ", '" + teamAbbreviation + "', " + blocked + ", '" + faceoffWinPercentage + "', " + giveaways + ", " + hits + ", " + pim + ", " + powerplayGoals + ", " + powerplayOpportunities + ", '" + powerplayPercentage + "', " + shots + ", " + takeaways + ")";
+            statement.executeUpdate(sql);
+            System.out.println("GameStats record inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
 
 
