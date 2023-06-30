@@ -26,7 +26,7 @@ public class Menu {
         MysqlHandler.createTableNBA();
         MysqlHandler.createTableNHL();
 
-//        fileNBA(dtfNBA.format(startDateNBA), dtfNHL.format(startDateNBA));
+        fileNBA(dtfNBA.format(startDateNBA), dtfNHL.format(startDateNBA));
         fileNHL(dtfNHL.format(startDateNHL));
 
 
