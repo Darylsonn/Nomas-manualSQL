@@ -1,12 +1,19 @@
+import NHL_Class.Game;
 import NHL_Class.Goal;
+import NHL_Class.Root;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,10 +30,12 @@ public class Hockey {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         try {
-            NHL_Class.Root root = objectMapper.readValue(file, NHL_Class.Root.class);
-            for (NHL_Class.Game game : root.getGames()) {
+            Root root = objectMapper.readValue(file, Root.class);
+            for (Game game : root.getGames()) {
                 int teamAwayGoals = 0;
                 int teamHomeGoals = 0;
+//                LocalDate date = game.startTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                Timestamp timestamp = new Timestamp(game.startTime.getTime());
                 for(Goal goal : game.getGoals()){
                     if(goal.team.equals(game.getTeams().away.getAbbreviation())) {
                         teamAwayGoals++;
@@ -36,7 +45,7 @@ public class Hockey {
                     }
                 }
                 DatabaseHelper.insertGame(
-                        game.getStartTime(),
+                        timestamp,
                         game.getTeams().getAway().getAbbreviation(),
                         game.getTeams().getAway().getLocationName(),
                         game.getTeams().getAway().getShortName(),

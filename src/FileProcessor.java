@@ -18,9 +18,13 @@ public class FileProcessor {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
                 writer.write(sb.toString());
                 writer.close();
+                System.out.println("File " + file + " downloaded.");
             } catch (Exception e) {
-                System.out.println("File " + file + " created");
+                e.printStackTrace();
             }
+        }
+        else{
+            System.out.println("File " + file + " already exists!");
         }
         return file;
     }
