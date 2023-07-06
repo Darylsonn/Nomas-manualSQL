@@ -45,6 +45,7 @@ public class Hockey {
                     }
                 }
                 DatabaseHelper.insertGame(
+                        game,
                         timestamp,
                         game.getTeams().getAway().getAbbreviation(),
                         game.getTeams().getAway().getLocationName(),
@@ -57,6 +58,25 @@ public class Hockey {
                         teamAwayGoals,
                         teamHomeGoals
                 );
+                for(Goal goal : game.getGoals()){
+                    String assistPlayer = null;
+                    Integer assistSeasonTotal = null;
+                    if(goal.assists != null){
+                        assistPlayer = goal.assists.get(0).player;
+                    }
+                    DatabaseHelper.insertGoal(
+                            game.getGame_id(),
+                            goal.team,
+                            goal.period,
+                            goal.scorer.player,
+                            goal.scorer.seasonTotal,
+                            assistPlayer, // TODO need Assists table
+                            goal.assists.get(0).seasonTotal, // TODO change int to object in insert method
+                            goal.min,
+                            goal.sec,
+                            goal.emptyNet
+                    );
+                }
             }
             System.out.println("Game records inserted successfully");
         } catch (Exception e) {

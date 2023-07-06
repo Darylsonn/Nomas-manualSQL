@@ -3,6 +3,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 public class Game{
+    public int getGame_id() {
+        return game_id;
+    }
+
+    public void setGame_id(int game_id) {
+        this.game_id = game_id;
+    }
+
+    public int game_id;
     public NHL_Class.Status status;
 
     public Date getStartTime() {

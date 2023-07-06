@@ -26,6 +26,7 @@ public class MenuTest {
         File file = FileProcessor.getFileHockey(date);
         DatabaseHelper.createFilesTable();
         DatabaseHelper.createGamesTable();
+        DatabaseHelper.createGoalsTable();
         if(!DatabaseHelper.queryFileName(file.getName())) {
             DatabaseHelper.insertFileName(file.getName(), Date.valueOf(startDateNHL));
             Hockey.uploadFileDataHockey(file);
