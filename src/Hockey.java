@@ -34,7 +34,6 @@ public class Hockey {
             for (Game game : root.getGames()) {
                 int teamAwayGoals = 0;
                 int teamHomeGoals = 0;
-//                LocalDate date = game.startTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 Timestamp timestamp = new Timestamp(game.startTime.getTime());
                 for(Goal goal : game.getGoals()){
                     if(goal.team.equals(game.getTeams().away.getAbbreviation())) {
@@ -47,38 +46,14 @@ public class Hockey {
                 DatabaseHelper.insertGame(
                         game,
                         timestamp,
-                        game.getTeams().getAway().getAbbreviation(),
-                        game.getTeams().getAway().getLocationName(),
-                        game.getTeams().getAway().getShortName(),
-                        game.getTeams().getAway().getTeamName(),
-                        game.getTeams().getHome().getAbbreviation(),
-                        game.getTeams().getHome().getLocationName(),
-                        game.getTeams().getHome().getShortName(),
-                        game.getTeams().getHome().getTeamName(),
                         teamAwayGoals,
                         teamHomeGoals
                 );
                 for(Goal goal : game.getGoals()){
-                    String assistPlayer = null;
-                    Integer assistSeasonTotal = null;
-                    if(goal.assists != null){
-                        assistPlayer = goal.assists.get(0).player;
-                    }
-                    DatabaseHelper.insertGoal(
-                            game.getGame_id(),
-                            goal.team,
-                            goal.period,
-                            goal.scorer.player,
-                            goal.scorer.seasonTotal,
-                            assistPlayer, // TODO need Assists table
-                            goal.assists.get(0).seasonTotal, // TODO change int to object in insert method
-                            goal.min,
-                            goal.sec,
-                            goal.emptyNet
-                    );
+                    DatabaseHelper.insertGoal(goal, game);
                 }
+                System.out.println("Game records inserted successfully");
             }
-            System.out.println("Game records inserted successfully");
         } catch (Exception e) {
             e.printStackTrace();
         }

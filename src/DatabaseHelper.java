@@ -1,4 +1,5 @@
 import NHL_Class.Game;
+import NHL_Class.Goal;
 
 import java.sql.*;
 import java.util.Arrays;
@@ -97,7 +98,7 @@ public class DatabaseHelper {
     // Function to create the Goals table
     public static void createGoalsTable() {
             String sql = "CREATE TABLE goals (" +
-                    "goal_id VARCHAR(255) PRIMARY KEY," +
+                    "goal_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                     "game_id VARCHAR(255) REFERENCES games(game_id)," +
                     "team_abbreviation VARCHAR(255)," +
                     "period VARCHAR(255)," +
@@ -184,23 +185,22 @@ public class DatabaseHelper {
         }
 
     // Function to create and execute an SQL insert statement for the Games table
-    public static void insertGame(Game game, java.sql.Timestamp startTime, String awayTeamAbbreviation, String awayTeamLocation, String awayTeamShortName, String awayTeamName, String homeTeamAbbreviation,
-                                  String homeTeamLocation, String homeTeamShortName, String homeTeamName, int awayTeamGoals, int homeTeamGoals) {
+    public static void insertGame(Game game, Date date, int awayTeamGoals, int homeTeamGoals) {
 
             String sql = "INSERT INTO games (start_time, away_team_abbreviation, away_team_location, away_team_short_name, away_team_name, home_team_abbreviation, home_team_location, home_team_short_name, home_team_name, away_team_goals, home_team_goals)"
                         + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             Connection con = MysqlCon.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setTimestamp(1, startTime);
-            preparedStatement.setString(2, awayTeamAbbreviation);
-            preparedStatement.setString(3, awayTeamLocation);
-            preparedStatement.setString(4, awayTeamShortName);
-            preparedStatement.setString(5, awayTeamName);
-            preparedStatement.setString(6, homeTeamAbbreviation);
-            preparedStatement.setString(7, homeTeamLocation);
-            preparedStatement.setString(8, homeTeamShortName);
-            preparedStatement.setString(9, homeTeamName);
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(date.toString()));
+            preparedStatement.setString(2, game.getTeams().getAway().getAbbreviation());
+            preparedStatement.setString(3, game.getTeams().getAway().getLocationName());
+            preparedStatement.setString(4, game.getTeams().getAway().getShortName());
+            preparedStatement.setString(5, game.getTeams().getAway().getTeamName());
+            preparedStatement.setString(6, game.getTeams().getHome().getAbbreviation());
+            preparedStatement.setString(7, game.getTeams().getHome().getLocationName());
+            preparedStatement.setString(8, game.getTeams().getHome().getShortName());
+            preparedStatement.setString(9, game.getTeams().getHome().getTeamName());
             preparedStatement.setInt(10, awayTeamGoals);
             preparedStatement.setInt(11, homeTeamGoals);
             int affectedRows = preparedStatement.executeUpdate();
@@ -212,11 +212,10 @@ public class DatabaseHelper {
                     game.setGame_id(generatedKeys.getInt(1));
                 }
                 else {
-                    throw new SQLException("Failed get game's ID");
+                    throw new SQLException("Failed to get game's ID");
                 }
             }
             con.close();
-            System.out.println("Game record inserted successfully.");
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -224,23 +223,28 @@ public class DatabaseHelper {
     }
 
     // Function to create and execute an SQL insert statement for the Goals table
-    public static void insertGoal(int game_id, String teamAbbreviation, String period, String scorerPlayer, int scorerSeasonTotal, String assistsPlayers, int assistsSeasonTotals, int minute, int second, boolean emptyNet) {
+    public static void insertGoal(Goal goal, Game game) {
             String sql = "INSERT INTO goals (game_id, team_abbreviation, period, scorer_player, scorer_season_total, assists_players, assists_season_totals, minute, second, empty_net) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             Connection con = MysqlCon.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setInt(1, game_id);
-            preparedStatement.setString(2, teamAbbreviation);
-            preparedStatement.setString(3, period);
-            preparedStatement.setString(4, scorerPlayer);
-            preparedStatement.setInt(5, scorerSeasonTotal);
-            preparedStatement.setString(6, assistsPlayers);
-            preparedStatement.setInt(7, assistsSeasonTotals);
-            preparedStatement.setInt(8, minute);
-            preparedStatement.setInt(9, second);
-            preparedStatement.setBoolean(10, emptyNet);
+            preparedStatement.setInt(1, game.getGame_id());
+            preparedStatement.setString(2, goal.team);
+            preparedStatement.setString(3, goal.period);
+            preparedStatement.setString(4, goal.scorer.player);
+            preparedStatement.setInt(5, goal.scorer.seasonTotal);
+            if(goal.assists == null || goal.assists.isEmpty()){
+                preparedStatement.setNull(6, Types.VARCHAR);
+                preparedStatement.setNull(7, Types.INTEGER);
+            }else {
+                preparedStatement.setString(6, goal.assists.get(0).player);
+                preparedStatement.setInt(7, goal.assists.get(0).seasonTotal);
+            }
+            preparedStatement.setInt(8, goal.min);
+            preparedStatement.setInt(9, goal.sec);
+            preparedStatement.setBoolean(10, goal.emptyNet);
+            preparedStatement.executeUpdate();
             con.close();
-            System.out.println("Game record inserted successfully.");
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -248,15 +252,12 @@ public class DatabaseHelper {
     }
 
     // Function to create and execute an SQL insert statement for the Teams table
-    public static void insertTeam(Connection connection, int teamId, String abbreviation, String locationName, String shortName, String teamName) {
-            String sql = "INSERT INTO teams (team_id, abbreviation, location_name, short_name, team_name) VALUES ("
-                    + teamId + ", '"
-                    + abbreviation + "', '"
-                    + locationName + "', '"
-                    + shortName + "', '"
-                    + teamName + "')";
-            try(Statement stmt = MysqlCon.getConnection().createStatement()){
-                stmt.executeUpdate(sql);
+    public static void insertTeam(int teamId, String abbreviation, String locationName, String shortName, String teamName) {
+            String sql = "INSERT INTO teams (team_id, abbreviation, location_name, short_name, team_name) VALUES (?, ?, ?, ?, ?)";
+            try{
+                Connection con = MysqlCon.getConnection();
+                PreparedStatement preparedStatement = con.prepareStatement(sql);
+
                 System.out.println("Team record inserted successfully.");
             }
             catch (SQLException e){
