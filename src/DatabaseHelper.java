@@ -2,7 +2,6 @@ import NHL_Class.Game;
 import NHL_Class.Goal;
 
 import java.sql.*;
-import java.util.Arrays;
 import java.util.Date;
 
 public class DatabaseHelper {
@@ -65,7 +64,7 @@ public class DatabaseHelper {
     // Function to create the Games table
     public static void createGamesTable() {
             String sql = "CREATE TABLE IF NOT EXISTS games (" +
-                    "game_id INTEGER not null AUTO_INCREMENT PRIMARY KEY," +
+                    "game_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                     "start_time TIMESTAMP," +
                     "away_team_abbreviation VARCHAR(255)," +
                     "away_team_location VARCHAR(255)," +
@@ -99,7 +98,7 @@ public class DatabaseHelper {
     public static void createGoalsTable() {
             String sql = "CREATE TABLE goals (" +
                     "goal_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-                    "game_id VARCHAR(255) REFERENCES games(game_id)," +
+                    "game_id INTEGER NOT NULL REFERENCES games(game_id)," +
                     "team_abbreviation VARCHAR(255)," +
                     "period VARCHAR(255)," +
                     "scorer_player VARCHAR(255)," +
@@ -109,6 +108,7 @@ public class DatabaseHelper {
                     "minute INT," +
                     "second INT," +
                     "empty_net BOOLEAN" +
+                    "FOREIGN KEY (game_id)" +
                     ")";
         try{
             Connection con = MysqlCon.getConnection();
@@ -266,7 +266,7 @@ public class DatabaseHelper {
     }
 
     // Function to create and execute an SQL insert statement for the GameStats table
-    public static void insertGameStats(Connection connection, int gameId, String teamAbbreviation, int blocked, String faceoffWinPercentage, int giveaways, int hits, int pim, int powerplayGoals, int powerplayOpportunities, String powerplayPercentage, int shots, int takeaways) {
+    public static void insertGameStats(int gameId, String teamAbbreviation, int blocked, String faceoffWinPercentage, int giveaways, int hits, int pim, int powerplayGoals, int powerplayOpportunities, String powerplayPercentage, int shots, int takeaways) {
             String sql = "INSERT INTO gamestats (game_id, team_abbreviation, blocked, faceoff_win_percentage, giveaways, hits, pim, powerplay_goals, powerplay_opportunities, powerplay_percentage, shots, takeaways) VALUES ("
                     + gameId + ", '"
                     + teamAbbreviation + "', "

@@ -1,5 +1,6 @@
 import NBA_Class.Game;
 import NBA_Class.Root;
+import NHL_Class.ANA;
 import NHL_Class.Goal;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -148,6 +149,9 @@ public class Menu {
                 String Hteam = game.teams.home.abbreviation;
                 String Vteam = game.teams.away.abbreviation;
                 Map<String, Integer> map = game.gameStats.shots.getMap();
+                Map<String, Object> map2 = game.gameStats.powerPlay.getMap();
+                Object value = map2.get(Hteam);
+                int wins = ((ANA)value).getWins();
                 int Hteam_score = 0;
                 int Vteam_score = 0;
                 int Hteam_1T = 0;

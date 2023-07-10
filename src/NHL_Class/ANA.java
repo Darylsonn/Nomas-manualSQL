@@ -1,5 +1,9 @@
 package NHL_Class; 
 public class ANA{
+    public int getWins() {
+        return wins;
+    }
+
     public int wins;
     public int losses;
     public int ot;

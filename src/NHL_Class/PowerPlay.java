@@ -1,5 +1,10 @@
 package NHL_Class; 
-import com.fasterxml.jackson.annotation.JsonProperty; 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
 public class PowerPlay{
     @JsonProperty("VAN") 
     public VAN vAN;
@@ -65,4 +70,22 @@ public class PowerPlay{
     public ARI aRI;
     @JsonProperty("TOR") 
     public TOR tOR;
+
+    public Map<String, Object> getMap() {
+        Map<String, Object> map = new HashMap<>();
+        Field[] fields = PowerPlay.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            if (!field.isAnnotationPresent(com.fasterxml.jackson.annotation.JsonProperty.class)) {
+                continue;
+            }
+            try {
+                JsonProperty a = field.getAnnotation(com.fasterxml.jackson.annotation.JsonProperty.class);
+                map.put(a.value(), (Object) field.get(this));
+            } catch (IllegalAccessException e) {
+                continue;
+            }
+        }
+        return map;
+    }
 }
