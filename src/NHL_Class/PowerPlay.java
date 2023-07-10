@@ -70,22 +70,4 @@ public class PowerPlay{
     public ARI aRI;
     @JsonProperty("TOR") 
     public TOR tOR;
-
-    public Map<String, Object> getMap() {
-        Map<String, Object> map = new HashMap<>();
-        Field[] fields = PowerPlay.class.getDeclaredFields();
-
-        for (Field field : fields) {
-            if (!field.isAnnotationPresent(com.fasterxml.jackson.annotation.JsonProperty.class)) {
-                continue;
-            }
-            try {
-                JsonProperty a = field.getAnnotation(com.fasterxml.jackson.annotation.JsonProperty.class);
-                map.put(a.value(), (Object) field.get(this));
-            } catch (IllegalAccessException e) {
-                continue;
-            }
-        }
-        return map;
-    }
 }
