@@ -34,6 +34,7 @@ public class MenuTest {
         }
         else {
             System.out.println("File already processed!");
+            Hockey.processGameStats(file);
         }
     }
 }

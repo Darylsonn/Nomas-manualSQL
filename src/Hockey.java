@@ -1,4 +1,5 @@
 import NHL_Class.Game;
+import NHL_Class.GameStats;
 import NHL_Class.Goal;
 import NHL_Class.Root;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -57,6 +59,7 @@ public class Hockey {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
 //    public static void uploadFileData(File file){
 //        try {
@@ -132,5 +135,48 @@ public class Hockey {
 //        }
 //    }
         /* OLD */
+    }
+    public static void processGameStats(File file) {
+        // Deserialize JSON file into a Map
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Map<String, Object> jsonMap = objectMapper.readValue(file, Map.class);
+
+            // Access the values for each game
+            List<Map<String, Object>> gamesList = (List<Map<String, Object>>) jsonMap.get("games");
+            if (gamesList != null && !gamesList.isEmpty()) {
+                for (Map<String, Object> game : gamesList) {
+                    Map<String, Object> teams = (Map<String, Object>) game.get("teams");
+                    Map<String, Object> awayTeam = (Map<String, Object>) teams.get("away");
+                    Map<String, Object> homeTeam = (Map<String, Object>) teams.get("home");
+                    String awayAbbreviation = (String) awayTeam.get("abbreviation");
+                    String homeAbbreviation = (String) homeTeam.get("abbreviation");
+
+                    // Retrieve streaks and standings based on team abbreviation
+                    Map<String, Object> currentStats = (Map<String, Object>) game.get("currentStats");
+                    Map<String, Object> streaks = objectMapper.convertValue(currentStats.get("streaks"), Map.class);
+                    Map<String, Object> standings = (Map<String, Object>) currentStats.get("standings");
+
+                    // Access the parameters using the team abbreviation
+                    Map<String, Object> awayStreak = (Map<String, Object>) streaks.get(awayAbbreviation);
+                    Map<String, Object> homeStreak = (Map<String, Object>) streaks.get(homeAbbreviation);
+
+                    // Retrieve WINS and count values
+                    String awayWins = (String) awayStreak.get("type");
+                    int awayCount = (int) awayStreak.get("count");
+                    String homeWins = (String) homeStreak.get("type");
+                    int homeCount = (int) homeStreak.get("count");
+
+                    // Print the values
+                    System.out.println("Away Team Streaks - WINS: " + awayWins + ", Count: " + awayCount);
+                    System.out.println("Home Team Streaks - WINS: " + homeWins + ", Count: " + homeCount);
+                    System.out.println();
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

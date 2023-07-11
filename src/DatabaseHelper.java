@@ -98,7 +98,7 @@ public class DatabaseHelper {
     public static void createGoalsTable() {
             String sql = "CREATE TABLE goals (" +
                     "goal_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-                    "game_id INTEGER NOT NULL REFERENCES games(game_id)," +
+                    "game_id INTEGER NOT NULL," +
                     "team_abbreviation VARCHAR(255)," +
                     "period VARCHAR(255)," +
                     "scorer_player VARCHAR(255)," +
@@ -107,8 +107,8 @@ public class DatabaseHelper {
                     "assists_season_totals INT," +
                     "minute INT," +
                     "second INT," +
-                    "empty_net BOOLEAN" +
-                    "FOREIGN KEY (game_id)" +
+                    "empty_net BOOLEAN," +
+                    "FOREIGN KEY (game_id) REFERENCES games(game_id)" +
                     ")";
         try{
             Connection con = MysqlCon.getConnection();
