@@ -1,6 +1,12 @@
 package NHL_Class; 
-import com.fasterxml.jackson.annotation.JsonProperty; 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Scores{
+    public boolean overtime;
     @JsonProperty("VAN") 
     public int vAN;
     @JsonProperty("BUF") 
@@ -21,7 +27,6 @@ public class Scores{
     public int dAL;
     @JsonProperty("PIT") 
     public int pIT;
-    public boolean shootout;
     @JsonProperty("COL") 
     public int cOL;
     @JsonProperty("WSH") 
@@ -42,7 +47,6 @@ public class Scores{
     public int wPG;
     @JsonProperty("MIN") 
     public int mIN;
-    public boolean overtime;
     @JsonProperty("ANA") 
     public int aNA;
     @JsonProperty("EDM") 
@@ -67,4 +71,22 @@ public class Scores{
     public int aRI;
     @JsonProperty("TOR") 
     public int tOR;
+
+    public Map<String, Integer> getMap() {
+        Map<String, Integer> map = new HashMap<>();
+        Field[] fields = Scores.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            if (!field.isAnnotationPresent(com.fasterxml.jackson.annotation.JsonProperty.class)) {
+                continue;
+            }
+            try {
+                JsonProperty a = field.getAnnotation(com.fasterxml.jackson.annotation.JsonProperty.class);
+                map.put(a.value(), (Integer) field.get(this));
+            } catch (IllegalAccessException e) {
+                continue;
+            }
+        }
+        return map;
+    }
 }

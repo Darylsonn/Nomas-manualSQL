@@ -3,8 +3,15 @@ import NHL_Class.Goal;
 
 import java.sql.*;
 import java.util.Date;
+import java.util.Map;
 
 public class DatabaseHelper {
+    public static void createTables(){
+        createFilesTable();
+        createGamesTable();
+        createGoalsTable();
+        createTeamsTable();
+    }
     // Function to create Files table
     public static void createFilesTable(){
         String sql = "CREATE TABLE IF NOT EXISTS files(" +
@@ -46,19 +53,27 @@ public class DatabaseHelper {
         return result;
     }
     // Function to insert file name
-    public static void insertFileName(String string, Date date){
+    public static boolean insertFileName(String string, Date date){
         String sql = "INSERT INTO files (file_name, date) VALUES (?, ?)";
-        try {
-            Connection con = MysqlCon.getConnection();
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setString(1, string);
-            preparedStatement.setDate(2, (java.sql.Date) date);
-            preparedStatement.executeUpdate();
-            con.close();
+        boolean result = false;
+        if(queryFileName(string)) { //USE TO PRCOCESS TESTS
+            try {
+                Connection con = MysqlCon.getConnection();
+                PreparedStatement preparedStatement = con.prepareStatement(sql);
+                preparedStatement.setString(1, string);
+                preparedStatement.setDate(2, (java.sql.Date) date);
+                preparedStatement.executeUpdate();
+                con.close();
+                System.out.println("File " + string + " processed.");
+                result = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        catch (Exception e){
-            e.printStackTrace();
+        else{
+            System.out.println("File " + string + " already processed!");
         }
+        return result;
     }
 
     // Function to create the Games table
@@ -75,7 +90,8 @@ public class DatabaseHelper {
                     "home_team_short_name VARCHAR(255)," +
                     "home_team_name VARCHAR(255)," +
                     "away_team_goals INT," +
-                    "home_team_goals INT" +
+                    "home_team_goals INT," +
+                    "OT" +
                     ")";
         try{
             Connection con = MysqlCon.getConnection();
@@ -150,11 +166,30 @@ public class DatabaseHelper {
         catch (SQLException e){
             e.printStackTrace();
         }
+    } //TODO check if teams data remain throughout the games
+
+    //Function to query teamID from Teams table
+    public static boolean queryTeamID(int id){
+        String sql = "SELECT team_id FROM teams WHERE team_id = ?";
+        boolean result = false;
+        try{
+            Connection con = MysqlCon.getConnection();
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            result = rs.next();
+            con.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
     }
+
     // Function to create the GameStats table
     public static void createGameStatsTable() {
-            String sql = "CREATE TABLE gamestats (" +
-                    "game_id VARCHAR(255) REFERENCES games(game_id)," +
+            String sql = "CREATE TABLE game_stats (" +
+                    "game_id INTEGER NOT NULL," +
                     "team_abbreviation VARCHAR(255)," +
                     "blocked INT," +
                     "faceoff_win_percentage VARCHAR(255)," +
@@ -165,12 +200,14 @@ public class DatabaseHelper {
                     "powerplay_opportunities INT," +
                     "powerplay_percentage VARCHAR(255)," +
                     "shots INT," +
-                    "takeaways INT" +
+                    "takeaways INT," +
+                    "PRIMARY KEY (game_id)," +
+                    "FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE" +
                     ")";
         try{
             Connection con = MysqlCon.getConnection();
             DatabaseMetaData dbm = con.getMetaData();
-            ResultSet rs = dbm.getTables(null, null, "gamestats",null);
+            ResultSet rs = dbm.getTables(null, null, "game_stats",null);
             if(rs.next()) {
                 System.out.println("Table 'gamestats' already exists");
             }else{
@@ -185,12 +222,13 @@ public class DatabaseHelper {
         }
 
     // Function to create and execute an SQL insert statement for the Games table
-    public static void insertGame(Game game, Date date, int awayTeamGoals, int homeTeamGoals) {
+    public static void insertGame(Game game, Date date) {
 
-            String sql = "INSERT INTO games (start_time, away_team_abbreviation, away_team_location, away_team_short_name, away_team_name, home_team_abbreviation, home_team_location, home_team_short_name, home_team_name, away_team_goals, home_team_goals)"
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO games (start_time, away_team_abbreviation, away_team_location, away_team_short_name, away_team_name, home_team_abbreviation, home_team_location, home_team_short_name, home_team_name, away_team_goals, home_team_goals, OT)"
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             Connection con = MysqlCon.getConnection();
+            Map<String, Integer> scoresMap = game.scores.getMap();
             PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(date.toString()));
             preparedStatement.setString(2, game.getTeams().getAway().getAbbreviation());
@@ -201,8 +239,9 @@ public class DatabaseHelper {
             preparedStatement.setString(7, game.getTeams().getHome().getLocationName());
             preparedStatement.setString(8, game.getTeams().getHome().getShortName());
             preparedStatement.setString(9, game.getTeams().getHome().getTeamName());
-            preparedStatement.setInt(10, awayTeamGoals);
-            preparedStatement.setInt(11, homeTeamGoals);
+            preparedStatement.setInt(10, scoresMap.get(game.teams.away.getAbbreviation()));
+            preparedStatement.setInt(11, scoresMap.get(game.teams.home.getAbbreviation()));
+            preparedStatement.setBoolean(12, game.scores.overtime);
             int affectedRows = preparedStatement.executeUpdate();
             if(affectedRows == 0){
                 throw new SQLException("Creating game record failed, now rows affected");

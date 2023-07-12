@@ -34,22 +34,10 @@ public class Hockey {
         try {
             Root root = objectMapper.readValue(file, Root.class);
             for (Game game : root.getGames()) {
-                int teamAwayGoals = 0;
-                int teamHomeGoals = 0;
                 Timestamp timestamp = new Timestamp(game.startTime.getTime());
-                for(Goal goal : game.getGoals()){
-                    if(goal.team.equals(game.getTeams().away.getAbbreviation())) {
-                        teamAwayGoals++;
-                    }
-                    else if(goal.team.equals(game.getTeams().home.getAbbreviation())){
-                        teamHomeGoals++;
-                    }
-                }
                 DatabaseHelper.insertGame(
                         game,
-                        timestamp,
-                        teamAwayGoals,
-                        teamHomeGoals
+                        timestamp
                 );
                 for(Goal goal : game.getGoals()){
                     DatabaseHelper.insertGoal(goal, game);
